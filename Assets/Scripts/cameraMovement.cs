@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class CameraMovement : MonoBehaviour
+{
+    public float movementSpeed = 5f;
+    public float lowerClamp = 2f, upperClamp = 20f;
+
+    private Vector3 _planeForward;
+    private Camera _camera;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        _camera = gameObject.GetComponent<Camera>();
+        _planeForward = new Vector3(1, 0, 1).normalized;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        bool zoomIn = Input.GetKey(KeyCode.E);
+        bool zoomOut = Input.GetKey(KeyCode.Q);
+
+        Vector3 movementVector = horizontalInput * transform.right + verticalInput * _planeForward;
+        transform.position += movementVector * (movementSpeed * Time.deltaTime);
+
+        float zoomInput;
+        if (zoomIn)
+        {
+            zoomInput = -1f;
+        }
+        else if (zoomOut)
+        {
+            zoomInput = 1f;
+        }
+        else
+        {
+            zoomInput = 0f;
+        }
+
+        float newSize = _camera.orthographicSize + zoomInput * Time.deltaTime * movementSpeed;
+        _camera.orthographicSize = Mathf.Clamp(newSize, lowerClamp, upperClamp);
+
+    }
+}

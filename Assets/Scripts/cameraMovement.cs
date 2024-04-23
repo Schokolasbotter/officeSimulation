@@ -21,14 +21,19 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Get Inputs
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         bool zoomIn = Input.GetKey(KeyCode.E);
         bool zoomOut = Input.GetKey(KeyCode.Q);
-
+        bool speedDown = Input.GetKeyDown(KeyCode.LeftArrow);
+        bool speedUp = Input.GetKeyDown(KeyCode.RightArrow);
+        
+        //Move on the plane
         Vector3 movementVector = horizontalInput * transform.right + verticalInput * _planeForward;
         transform.position += movementVector * (movementSpeed * Time.deltaTime);
-
+        
+        //Zoom
         float zoomInput;
         if (zoomIn)
         {
@@ -42,9 +47,18 @@ public class CameraMovement : MonoBehaviour
         {
             zoomInput = 0f;
         }
-
         float newSize = _camera.orthographicSize + zoomInput * Time.deltaTime * movementSpeed;
         _camera.orthographicSize = Mathf.Clamp(newSize, lowerClamp, upperClamp);
+        
+        //Speed
+        if (speedUp)
+        {
+            Time.timeScale += 0.1f;
+        }
+        else if (speedDown)
+        {
+            Time.timeScale -= 0.1f;
+        }
 
     }
 }

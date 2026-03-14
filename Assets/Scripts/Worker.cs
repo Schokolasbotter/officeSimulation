@@ -73,7 +73,7 @@ public class Worker : MonoBehaviour
         _workerMaterial.SetFloat("_exhaustionLevel", exhaustion);
         
         //Start task when arrived at destination
-        if (_navMeshAgent.destination == transform.position)
+        if (_myAssignedStation != null && _navMeshAgent.destination == transform.position)
         {
             StartTask(_myAssignedStation);
         }
@@ -233,6 +233,7 @@ public class Worker : MonoBehaviour
         int attempts = 0;
         bool canWork = false;
         Station stationToCheck = null;
+        if (stationList.Count == 0) return;
         while (!canWork && attempts < maxAttempts)
         {
             stationToCheck = stationList[Random.Range(0, stationList.Count)];
